@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    >
+ 
+     <Button
+        android:id="@+id/buttonBottomPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop player"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:onClick="stopPlayer"
+        />
+     
+     <Button
+        android:id="@+id/buttonStopServiceBottomPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Close application"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:onClick="stopYaampService"
+        />
+
+    
+
+</RelativeLayout>

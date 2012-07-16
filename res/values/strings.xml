@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, YaampActivity!</string>
+    <string name="app_name">Yaamp</string>
+    <string name="service_name_identifier">666</string>
+    
+    <string name="margin_left_right">5dp</string>
+    <string name="margin_top_down">5dp</string>
+
+</resources>
