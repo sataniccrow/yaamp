@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.g3ck0.yaamp.R;
+import com.g3ck0.yaamp.YaampActivity;
 import com.g3ck0.yaamp.service.utility.LocalBinder;
 import com.g3ck0.yaamp.service.utility.SongManager;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -18,9 +22,13 @@ import android.widget.Toast;
 
 public class PlayerService extends Service {
 	private static final String TAG = "yaamPlayerService";
+	private static final int ID = 6969;
 	private int NOTIFICATION = R.string.service_name_identifier;
 	private boolean isShuffleActive = false;
+	private NotificationManager mNM;
 	private SongManager songManager;
+	private Notification notification;
+	private PendingIntent pendingActivity;
 	
 	public MediaPlayer mediaPlayer;
 	
@@ -31,6 +39,7 @@ public class PlayerService extends Service {
 			Log.i(TAG,"songUri: '" + songUri +"'");
 			mediaPlayer.prepare();
 			mediaPlayer.start();
+			setNotificationMessage("now playing: " +  extractFileName(songUri));
 			Toast.makeText(getApplicationContext(), "starting: " + songUri, Toast.LENGTH_SHORT);
 		}catch (IOException e) {
 			Log.e("yaamPlayerService", e.getMessage());
@@ -100,7 +109,9 @@ public class PlayerService extends Service {
 			Toast.makeText(getApplicationContext(), "all songs have been played", Toast.LENGTH_SHORT);
 			return;
 		}else{
-			playSong(songManager.getSongUri(randomSong));
+			String song = songManager.getSongUri(randomSong);
+			playSong(song);
+			setNotificationMessage("now playing: " + extractFileName(song));
 		}
 	}
 	
@@ -111,6 +122,7 @@ public class PlayerService extends Service {
 	
 	@Override
 	public void onCreate(){
+		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mediaPlayer = new MediaPlayer();
 		
 		
@@ -131,20 +143,42 @@ public class PlayerService extends Service {
 	
 	@Override
 	public void onDestroy(){
-		mediaPlayer.stop();
+		pendingActivity.cancel();
+		mNM.cancel(ID);
+		stopForeground(true);
 	}
 	
 	@Override
 	public void onStart(Intent intent, int startId){
-		//mediaPlayer.start();
+		notification = new Notification(R.drawable.ghost, "yaamp service starting", System.currentTimeMillis());
+		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		
+		//pendingActivity = PendingIntent.getActivity(this, 0, new Intent(this, PlayerService.class), PendingIntent.FLAG_ONE_SHOT);
+		pendingActivity = PendingIntent.getActivity(this, 0, new Intent(getApplicationContext(),YaampActivity.class), PendingIntent.FLAG_ONE_SHOT);
+		notification.setLatestEventInfo(this, getResources().getString(R.string.app_service_name), "Yaamp service is running",pendingActivity);
+		mNM.notify(ID,notification);
+		startForeground(ID, notification);
 	}
-
+	
 	public boolean isShuffleActive() {
 		return isShuffleActive;
 	}
 
 	public void setShuffleActive(boolean isShuffleActive) {
 		this.isShuffleActive = isShuffleActive;
+	}
+
+	public void setNotificationMessage(String message){
+		if(notification != null && pendingActivity != null){
+			notification.setLatestEventInfo(this, getResources().getString(R.string.app_service_name), message, pendingActivity);
+			mNM.notify(ID, notification);
+		}
+	}
+	
+	public String extractFileName(String originalUri){
+		String[] tokens = originalUri.split("/");
+		if(tokens.length > 0 ) return tokens[tokens.length-1];
+		return originalUri;
 	}
 	
 }

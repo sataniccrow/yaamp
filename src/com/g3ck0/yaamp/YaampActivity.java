@@ -144,11 +144,12 @@ public class YaampActivity extends Activity {
     	if(intent != null){
     		if(isBound){
     			mBoundService.stopPlayer();
+    			mBoundService.onDestroy();
     			isBound = false;
+    			stopService(intent);
     			unbindService(mConnection);
     		}
-    	}
-    	
+    	}    	
     	cursor.close(); 
     	System.runFinalizersOnExit(true);
     	 System.exit(0);
@@ -186,6 +187,7 @@ public class YaampActivity extends Activity {
     		unbindService(mConnection);
     		isBound = false;
     	}
+    	cursor.close();
     	super.onDestroy();
     }
     
@@ -196,7 +198,7 @@ public class YaampActivity extends Activity {
     		localBinder = (LocalBinder<PlayerService>) service;
     		mBoundService = localBinder.getService();
     		Toast.makeText(context, "onBind-connect", Toast.LENGTH_SHORT);
-    		isBound = true;
+    		isBound = true;	
     	}
     	
 		@Override

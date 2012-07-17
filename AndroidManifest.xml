@@ -7,7 +7,7 @@
     <uses-sdk android:minSdkVersion="15" />
 
     <application
-        android:icon="@drawable/ghost_xdpi"
+        android:icon="@drawable/ghost"
         android:label="@string/app_name" >
         <activity
             android:name=".YaampActivity"
