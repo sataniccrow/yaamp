@@ -15,6 +15,8 @@
             android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
