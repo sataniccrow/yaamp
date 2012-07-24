@@ -91,10 +91,10 @@ public class PlayerService extends Service {
 		setShuffleActive(false);
 	}
 	
-	public boolean lastSong(){
+	public boolean previousSong(){
 		boolean result = false;
 		if(songManager == null) return false;
-		int res = songManager.lastSong();
+		int res = songManager.previousSong();
 		if(res == -1){
 			result = false;
 		}else{

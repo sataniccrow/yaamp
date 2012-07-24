@@ -2,43 +2,31 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/relativeLayoutTopPanel"
     >
-    
-    <TextView
-        android:id="@+id/textViewTopPanel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Songs'List"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:layout_alignParentLeft="true"
-        android:layout_alignBaseline="@+id/buttonTopPanel"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-         />
  
-     <Button
-        android:id="@+id/lastSongButtonTopPanel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Last song"
-        android:layout_toLeftOf="@+id/buttonTopPanel"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:onClick="lastSong"
-        />
+     <ImageButton
+         android:id="@+id/lastSongButtonTopPanel"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentTop="true"
+         android:layout_marginTop="5dp"
+         android:onClick="previousSong"
+         android:scaleType="fitXY"
+         android:src="@drawable/leftarrow" />
+     
+     <ImageButton
+         android:id="@+id/NextSongButtonTopPanel"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginRight="5dp"
+         android:layout_marginTop="5dp"
+         android:layout_alignParentTop="true"
+         android:layout_alignParentRight="true"
+         android:onClick="nextSong"
+         android:src="@drawable/rightarrow"
+         />
      
-     <Button
-        android:id="@+id/buttonTopPanel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Shuffle'em all"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:onClick="startShuffle"
-        />
-
-    
 
 </RelativeLayout>

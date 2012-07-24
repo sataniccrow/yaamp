@@ -7,6 +7,46 @@ public class SongManager {
 	private HashMap<Integer, String> mapForward;
 	private HashMap<Integer, String> mapBackward;
 	private ArrayList<Integer> playBackList;
+	private int playBackListCursor = -1;
+	
+	public Integer getNextItem(){
+		if(playBackListCursor == -1 || playBackList.size() <= 0){
+			return -1;
+		}else{
+			//[ ] [ ] [*]
+			//size = 3
+			//pointer @ 2
+			//check if((pointer + 2) > size)
+			if((playBackListCursor+2) <= playBackList.size() ){
+				moveAt(playBackListCursor + 1);
+				return playBackList.get(playBackListCursor);
+			}else{
+				return -1;
+			}
+		}
+	}
+	
+	public Integer getPreviousItem(){
+		if(playBackListCursor == -1 || playBackList.size() <= 0){
+			return -1;
+		}else{
+			//[*] [ ] [ ]
+			//size = 3
+			//pointer @ 0
+			//check if((pointer - 1) >= 0)
+			if((playBackListCursor - 1) >= 0){
+				moveAt(playBackListCursor -1);
+				return playBackList.get(playBackListCursor);
+			}else{
+				return -1;
+			}
+		}
+	}
+	
+	public void moveAt(int position){
+		System.out.println("cursor position: " + position);
+		playBackListCursor = position;
+	}
 	
 	public ArrayList<Integer> getPlayBackList() {
 		return playBackList;
@@ -48,16 +88,25 @@ public class SongManager {
 	}
 	
 	public int nextSong(){
+		
+		int result = getNextItem();
+		
+		if(result != -1){
+			return result;
+		}
+		
 		int random =randomSongChooser();
 		if(mapForward.size() > 0){
 			if(mapForward.get(new Integer(random)) != null) mapForward.remove(new Integer(random));
 			playBackList.add(new Integer(random));
+			moveAt(playBackListCursor+1);
 			return random;
 		}else{
 			if(mapBackward.size() > 0){
 				switchQueues();
 				if(mapForward.get(new Integer(random)) != null) mapForward.remove(new Integer(random));
 				playBackList.add(new Integer(random));
+				moveAt(playBackListCursor+1);
 				return random;
 			}else{
 				return -1;
@@ -65,13 +114,15 @@ public class SongManager {
 		}
 	}
 	
-	public int lastSong(){
-		if(playBackList == null || playBackList.size() == 0 || playBackList.size() < 2) return -1;
-		if(mapBackward.get(new Integer(playBackList.get(playBackList.size()-2))) != null){
-			playBackList.add(playBackList.get(playBackList.size()-2));
-			return (int)(playBackList.get(playBackList.size()-1));
+	public int previousSong(){
+		int result = getPreviousItem();
+		
+		if(result != -1){
+			
+			return result;
+		}else{
+			return -1;
 		}
-		return -1;
 	}
 	
 	public void switchQueues(){

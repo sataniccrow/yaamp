@@ -96,7 +96,7 @@ public class YaampActivity extends Activity {
         
     }
     
-    public void startShuffle(View w){
+    public void startShuffle(){
     	if(isBound && map != null && map.size() > 0){
     		if(mBoundService.setSongsMap(map)){
     			mBoundService.setShuffleActive(true);
@@ -107,9 +107,21 @@ public class YaampActivity extends Activity {
     	}
     }
     
-    public void lastSong(View v){
-    	if(isBound && map != null && map.size() > 0){
-    		if(!mBoundService.lastSong()){
+    public void nextSong(View w){
+    	if(isBound){
+    		if(!mBoundService.isShuffleActive()){
+    			startShuffle();
+    		}else{
+    			mBoundService.shuffle();
+    		}
+    	}else{
+			Toast.makeText(this, "Yaamp cant start playing", Toast.LENGTH_SHORT);
+		}
+    }
+    
+    public void previousSong(View v){
+    	if(isBound){
+    		if(!mBoundService.previousSong()){
     			Toast.makeText(this, "No previous song available", Toast.LENGTH_SHORT);
     		}
     	}else{
