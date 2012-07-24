@@ -94,8 +94,7 @@ public class YaampActivity extends Activity {
         //MediaStore.Audio.Media.DATA cursor.getString(3)
         int count =cursor.getCount();
         fillSongsList(cursor);
-        
-        Toast.makeText(this, "yaamp found " + count + " audio file(s)", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "yaamp found " + count + " audio file(s)", Toast.LENGTH_LONG).show();
         
     }
     
@@ -165,14 +164,12 @@ public class YaampActivity extends Activity {
     }
     
     public void startYaampService (){
-    	Toast.makeText(this, "yaamp service start", Toast.LENGTH_LONG).show();
     	intent = new Intent(context,PlayerService.class);
     	startService(intent);
     	bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
     
     public void stopYaampService(){
-    	Toast.makeText(this, "yaamp service stop", Toast.LENGTH_SHORT);
     	if(intent != null){
     		if(isBound){
     			mBoundService.stopPlayer();
@@ -188,7 +185,6 @@ public class YaampActivity extends Activity {
     }
     
     public void stopPlayer(View v){
-    	Toast.makeText(this, "yaamp stop playing", Toast.LENGTH_LONG).show();
     	if(isBound){
     		mBoundService.stopPlayer();
     	}
@@ -215,7 +211,6 @@ public class YaampActivity extends Activity {
     @Override
     public void onDestroy(){
     	if(isBound){
-    		Toast.makeText(getApplicationContext(), "onDestroy has been called", Toast.LENGTH_SHORT);
     		unbindService(mConnection);
     		isBound = false;
     	}
@@ -229,7 +224,6 @@ public class YaampActivity extends Activity {
     	public void onServiceConnected(ComponentName name, IBinder service) {
     		localBinder = (LocalBinder<PlayerService>) service;
     		mBoundService = localBinder.getService();
-    		Toast.makeText(context, "onBind-connect", Toast.LENGTH_SHORT);
     		isBound = true;	
     	}
     	
@@ -237,7 +231,6 @@ public class YaampActivity extends Activity {
 		public void onServiceDisconnected(ComponentName name) {
 			mBoundService = null;
 			isBound = false;
-			Toast.makeText(context, "onBind-disconnect", Toast.LENGTH_SHORT);			
 		}
 	};
 }
