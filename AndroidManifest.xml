@@ -7,12 +7,12 @@
     <uses-sdk android:minSdkVersion="15" />
 
     <application
-        android:icon="@drawable/ghost"
+        android:icon="@drawable/yaamp"
         android:label="@string/app_name" >
         <activity
             android:name=".YaampActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoTitleBar"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
             android:taskAffinity=""

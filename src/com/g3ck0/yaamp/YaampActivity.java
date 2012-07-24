@@ -21,6 +21,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -96,6 +99,23 @@ public class YaampActivity extends Activity {
         
     }
     
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.layout.menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.closeApplication: 
+            	stopYaampService();
+            	break;
+        }
+        return true;
+    }
+    
     public void startShuffle(){
     	if(isBound && map != null && map.size() > 0){
     		if(mBoundService.setSongsMap(map)){
@@ -151,7 +171,7 @@ public class YaampActivity extends Activity {
     	bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
     
-    public void stopYaampService(View v){
+    public void stopYaampService(){
     	Toast.makeText(this, "yaamp service stop", Toast.LENGTH_SHORT);
     	if(intent != null){
     		if(isBound){
