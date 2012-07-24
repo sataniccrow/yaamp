@@ -6,27 +6,16 @@
     >
  
      <ImageButton
-         android:id="@+id/lastSongButtonTopPanel"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentLeft="true"
-         android:layout_alignParentTop="true"
-         android:layout_marginTop="5dp"
-         android:onClick="previousSong"
-         android:scaleType="fitXY"
-         android:src="@drawable/leftarrow" />
-     
-     <ImageButton
-         android:id="@+id/NextSongButtonTopPanel"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_marginRight="5dp"
-         android:layout_marginTop="5dp"
-         android:layout_alignParentTop="true"
-         android:layout_alignParentRight="true"
-         android:onClick="nextSong"
-         android:src="@drawable/rightarrow"
-         />
+        android:id="@+id/buttonStopServiceBottomPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/close_button"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:onClick="stopYaampService"
+        />
+    
      
 
 </RelativeLayout>

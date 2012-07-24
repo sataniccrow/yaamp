@@ -3,29 +3,37 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     >
- 
-     <Button
-        android:id="@+id/buttonBottomPanel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop player"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:onClick="stopPlayer"
-        />
      
-     <Button
-        android:id="@+id/buttonStopServiceBottomPanel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Close application"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:onClick="stopYaampService"
-        />
+     <ImageButton
+         android:id="@+id/lastSongButtonTopPanel"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentTop="true"
+         android:layout_margin="5dp"
+         android:onClick="previousSong"
+         android:src="@drawable/leftarrow_thin" />
 
+     <ImageButton
+         android:id="@+id/stopButtonTopPanel"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerInParent="true"
+         android:layout_alignParentTop="true"
+         android:layout_margin="5dp"
+         android:onClick="stopPlayer"
+         android:src="@drawable/pause_button" />
+     
+
+     <ImageButton
+         android:id="@+id/NextSongButtonTopPanel"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_margin="5dp"
+         android:layout_alignParentTop="true"
+         android:layout_alignParentRight="true"
+         android:onClick="nextSong"
+         android:src="@drawable/rightarrow_thin"
+         />
     
 
 </RelativeLayout>
