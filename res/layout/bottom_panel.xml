@@ -20,7 +20,7 @@
          android:layout_centerInParent="true"
          android:layout_alignParentTop="true"
          android:layout_margin="5dp"
-         android:onClick="stopPlayer"
+         android:onClick="pausePlayer"
          android:src="@drawable/pause_button" />
      
 

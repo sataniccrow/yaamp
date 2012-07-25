@@ -17,9 +17,9 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.IBinder;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
 import android.widget.Toast;
 
 public class PlayerService extends Service {
@@ -31,6 +31,9 @@ public class PlayerService extends Service {
 	private SongManager songManager;
 	private Notification notification;
 	private PendingIntent pendingActivity;
+	private PhoneStateListener phoneStateListener;
+	private boolean isPaused = false;
+	private TelephonyManager mgr; 
 	
 	public MediaPlayer mediaPlayer;
 	
@@ -67,6 +70,20 @@ public class PlayerService extends Service {
 	public void stopPlayer(){
 		mediaPlayer.reset();
 		Toast.makeText(getApplicationContext(), "Yaamp stop", Toast.LENGTH_SHORT);
+	}
+	
+	public void pausePlayer(){
+		if(mediaPlayer != null){
+			if(mediaPlayer.isPlaying()){
+					mediaPlayer.pause();
+					Toast.makeText(getApplicationContext(), "Yaamp has been paused", Toast.LENGTH_SHORT);
+					isPaused = true;
+			}else{
+				if(isPaused){
+					mediaPlayer.start();
+				}
+			}
+		}
 	}
 	
 	public boolean setSongsMap(HashMap<Integer, String> map){
@@ -124,9 +141,47 @@ public class PlayerService extends Service {
 	
 	@Override
 	public void onCreate(){
+		phoneStateListener = new PhoneStateListener(){
+			@Override
+			public void onCallStateChanged(int state, String incomingNumber) {
+		        if (state == TelephonyManager.CALL_STATE_RINGING) {
+		            //Incoming call: Pause music
+		        	if(mediaPlayer != null){
+		        		if(mediaPlayer.isPlaying()){
+		        			mediaPlayer.pause();
+		        			isPaused = true;
+		        		}
+		        	}
+		        } else if(state == TelephonyManager.CALL_STATE_IDLE) {
+		            //Not in call: Play music
+		        	if(mediaPlayer != null && isPaused){
+		        		mediaPlayer.start();
+		        		isPaused = false;
+		        	}
+		        	
+		        } else if(state == TelephonyManager.CALL_STATE_OFFHOOK) {
+		            //A call is dialing, active or on hold
+		        	if(mediaPlayer != null){
+		        		if(mediaPlayer.isPlaying()){
+		        			mediaPlayer.pause();
+		        			isPaused = true;
+		        		}
+		        	}
+		        	
+		        }
+		        super.onCallStateChanged(state, incomingNumber);
+		    }
+		};
+		
+		mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+		
+		if(mgr != null) {
+		    mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+		}
+		
+		
 		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		mediaPlayer = new MediaPlayer();
-		
 		
 		mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
 			
@@ -147,6 +202,11 @@ public class PlayerService extends Service {
 	public void onDestroy(){
 		pendingActivity.cancel();
 		mNM.cancel(ID);
+		
+		if(mgr != null) {
+		    mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+		}
+		
 		stopForeground(true);
 	}
 	
@@ -164,6 +224,8 @@ public class PlayerService extends Service {
 		mNM.notify(ID,notification);
 		startForeground(ID, notification);
 	}
+	
+	
 			
 	public boolean isShuffleActive() {
 		return isShuffleActive;

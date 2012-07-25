@@ -190,6 +190,12 @@ public class YaampActivity extends Activity {
     	}
     }
     
+    public void pausePlayer(View v){
+    	if(isBound){
+    		mBoundService.pausePlayer();
+    	}
+    }
+    
     public void emptySongsCleaner(){
 		Uri playlist_uri= MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI;    
 		Cursor deletingCursor= managedQuery(playlist_uri, STAR, null,null,null);
