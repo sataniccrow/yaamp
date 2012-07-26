@@ -138,5 +138,11 @@ public class SongManager {
 		return "";
 	}
 		
-
+	public final static String getSongLenght(long length){
+		int totSecs = (int)(length/1000);
+		int secs = totSecs%60;
+		int mins = (int)totSecs/60;
+		
+		return mins + "m"+ secs + "s";
+	}
 }

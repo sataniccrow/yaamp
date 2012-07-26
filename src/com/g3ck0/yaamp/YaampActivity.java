@@ -4,16 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.g3ck0.yaamp.R;
-import com.g3ck0.yaamp.R.layout;
+import com.g3ck0.yaamp.R.id;
 import com.g3ck0.yaamp.service.PlayerService;
 import com.g3ck0.yaamp.service.utility.LocalBinder;
+import com.g3ck0.yaamp.service.utility.SongManager;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.DialogInterface.OnDismissListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,10 +28,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -39,7 +47,6 @@ public class YaampActivity extends Activity {
     private PlayerService mBoundService;
     private Intent intent;
     private Cursor cursor;
-    private ArrayList<String> songsList = new ArrayList<String>();
     private boolean isBound = false;
 	private final String SORT_ORDER = MediaStore.Audio.Media.DATE_ADDED + " DESC";
 	private final String[] SUMMARY = {MediaStore.Audio.Media._ID, 
@@ -58,6 +65,37 @@ public class YaampActivity extends Activity {
         
         setContentView(R.layout.main);
         listView = (ListView) findViewById(R.id.listViewSongsList);
+        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View v, int position, long id) {
+				if(isBound){
+					//this check should be useless
+					if(cursor != null){
+						cursor.moveToPosition(position);
+						String songTitle = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+						long songLenght = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+						setOverlay(songTitle + ", lenght: " + SongManager.getSongLenght(songLenght));
+//						Toast.makeText(context, 
+//								"title: " + songTitle +
+//								", lenght: " + SongManager.getSongLenght(songLenght) 
+//								, Toast.LENGTH_SHORT).show();
+						
+						return true;
+					}else{
+						Log.w(TAG, "no such item");						
+						
+						return false;
+					}						
+				}else{
+					Toast.makeText(context, "no service found", Toast.LENGTH_SHORT);
+					Log.w(TAG, "no service has been bound");
+					
+					return false;
+				}
+			}
+        	
+		});
         
         listView.setOnItemClickListener(new  OnItemClickListener() {
 
@@ -67,7 +105,7 @@ public class YaampActivity extends Activity {
 			{
 				if(isBound){
 					//this check should be useless
-					if(cursor != null){
+					if(cursor != null){						
 						cursor.moveToPosition(position);
 						String songUri = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 						if(!songUri.equals("")){
@@ -221,6 +259,15 @@ public class YaampActivity extends Activity {
     	}
     	cursor.close();
     	super.onDestroy();
+    }
+    
+    public void setOverlay(String text){
+    	final Dialog dialog = new Dialog(context);
+
+    	dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.mydialog);
+		((TextView) dialog.findViewById(id.selectedSong)).setText(text);
+		dialog.show();
     }
     
     private ServiceConnection mConnection = new ServiceConnection() {
