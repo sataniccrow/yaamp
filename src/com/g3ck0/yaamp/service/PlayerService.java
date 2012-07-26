@@ -217,9 +217,9 @@ public class PlayerService extends Service {
 		
 		//pendingActivity = PendingIntent.getActivity(this, 0, new Intent(this, PlayerService.class), PendingIntent.FLAG_ONE_SHOT);
 		Intent yaampActivity= new Intent(this, YaampActivity.class);
-		yaampActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		yaampActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		
-		pendingActivity = PendingIntent.getActivity(this, 0, yaampActivity, PendingIntent.FLAG_ONE_SHOT);
+		pendingActivity = PendingIntent.getActivity(this, 0, yaampActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 		notification.setLatestEventInfo(this, getResources().getString(R.string.app_service_name), "Yaamp service is running",pendingActivity);
 		mNM.notify(ID,notification);
 		startForeground(ID, notification);
