@@ -1,13 +1,24 @@
 package com.g3ck0.yaamp.service.utility;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.util.Log;
 
 public class SongManager {
 	private HashMap<Integer, String> mapForward;
 	private HashMap<Integer, String> mapBackward;
 	private ArrayList<Integer> playBackList;
 	private int playBackListCursor = -1;
+	public static final String COVER_FOLDER = "content://media/external/audio/albumart";
 	
 	public Integer getNextItem(){
 		if(playBackListCursor == -1 || playBackList.size() <= 0){
@@ -145,4 +156,19 @@ public class SongManager {
 		
 		return mins + "m"+ secs + "s";
 	}
+	
+	public static Bitmap getCover(Context context, int album_id){
+		try{
+			Uri sArtworkUri = Uri.parse(COVER_FOLDER);
+			Uri uri = ContentUris.withAppendedId(sArtworkUri, album_id);
+			ContentResolver res = context.getContentResolver();
+			InputStream in = res.openInputStream(uri);
+			Bitmap artwork = BitmapFactory.decodeStream(in);
+			return artwork;			
+		}catch (FileNotFoundException e){
+			Log.w("YAAMP songManager could not locate a cover", e.getMessage());
+			return null;
+		}		
+	}
+	
 }
