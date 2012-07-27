@@ -1,7 +1,6 @@
 package com.g3ck0.yaamp.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.g3ck0.yaamp.R;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 public class PlayerService extends Service {
 	private static final String TAG = "yaamPlayerService";
 	private static final int ID = 6969;
-	private int NOTIFICATION = R.string.service_name_identifier;
 	private boolean isShuffleActive = false;
 	private NotificationManager mNM;
 	private SongManager songManager;

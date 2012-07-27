@@ -14,10 +14,8 @@ import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.DialogInterface.OnDismissListener;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -30,11 +28,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,19 +40,21 @@ import android.widget.AdapterView.OnItemClickListener;
 public class YaampActivity extends Activity {
     
 	private static final String TAG = "yaamActivity";
+	private final String SORT_ORDER = MediaStore.Audio.Media.DATE_ADDED + " DESC";
+	private final String [] STAR= {"*"};
+	private final String[] SUMMARY = {MediaStore.Audio.Media._ID, 
+			MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION,
+			MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID,
+			MediaStore.Audio.Media.ARTIST};
 	private Context context;
     private LocalBinder<PlayerService> localBinder;
     private PlayerService mBoundService;
     private Intent intent;
     private Cursor cursor;
     private boolean isBound = false;
-	private final String SORT_ORDER = MediaStore.Audio.Media.DATE_ADDED + " DESC";
-	private final String[] SUMMARY = {MediaStore.Audio.Media._ID, 
-			MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.ALBUM_ID};
 	private ListView listView;
 	private ArrayAdapter<String> arrayAdapter;
 	private HashMap<Integer, String> map = new HashMap<Integer, String>();
-	private final String [] STAR= {"*"};
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,10 +75,14 @@ public class YaampActivity extends Activity {
 						cursor.moveToPosition(position);
 						
 						String songTitle 	= cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+						String artist = (((cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)) == null) 
+	    						|| cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)).equals("")
+	    						|| cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)).equals("<unknown>")) ? 
+    									"unknown artist" : cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
 						long songLenght 	= cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
 						long albumId 		= cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
 						
-						setOverlay(new String[]{songTitle, albumId+"", SongManager.getSongLenght(songLenght)});
+						setOverlay(new String[]{songTitle, albumId+"", SongManager.getSongLenght(songLenght),artist});
 						
 						return true;
 					}else{
@@ -191,9 +193,15 @@ public class YaampActivity extends Activity {
     	cursor.moveToFirst();
     	
     	while(!cursor.isAfterLast()){
-    		songsName.add(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
+    		songsName.add(
+    				cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)) + " - " +
+    				(((cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)) == null) 
+    						|| cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)).equals("")
+    						|| cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)).equals("<unknown>")
+    						) ? 
+    					"no artist" : cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
+    				)));
     		map.put(new Integer(cursor.getPosition()), cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)));
-    		String name = cursor.getString(1);
     		cursor.moveToNext();
     	}
     	
@@ -269,15 +277,16 @@ public class YaampActivity extends Activity {
 		dialog.setContentView(R.layout.mydialog);
 		
 		//setting cover only if it exists
-		if(text[2] != null){	
+		if(text[1] != null){	
 			Bitmap cover = SongManager.getCover(context, Integer.valueOf(text[1]).intValue());
 			if(cover!= null){
 				((ImageView) dialog.findViewById(id.selectedSongPortrait)).setImageBitmap(cover);				
 			}
 		}
 		
-		((TextView) dialog.findViewById(id.titleSong)).setText((text[0] != null) ? text[0] : "no title");
+		((TextView) dialog.findViewById(id.titleSong)).setText((text[0] != null) ? text[0] : "unknown title");
 		((TextView) dialog.findViewById(id.generalInfoSong)).setText((text[2] != null) ? text[2] : "no info about");
+		((TextView) dialog.findViewById(id.artistSong)).setText((text[3] != null) ? text[3] : "unknown artist");
 		
 				
 		dialog.show();
